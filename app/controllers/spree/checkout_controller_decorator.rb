@@ -260,8 +260,10 @@ module Spree
 
     def order_opts(order, payment_method, stage)
       items = order.line_items.map do |item|
+        name = item.variant.product.name
+        name << " - #{item.variant.options_text}" unless item.variant.options_text.empty?
         price = (item.price * 100).to_i # convert for gateway
-        { :name        => item.variant.product.name,
+        { :name        => name[0..120],
           :description => (item.variant.product.description[0..120] if item.variant.product.description),
           :number      => item.variant.sku,
           :quantity    => item.quantity,
