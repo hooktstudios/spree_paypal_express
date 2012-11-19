@@ -173,8 +173,8 @@ module Spree
 
         @order.finalize!
         flash[:notice] = I18n.t(:order_processed_successfully)
+        flash[:commerce_tracking] = "true"
         redirect_to completion_route
-
       else
         payment.failure!
         order_params = {}
@@ -263,8 +263,8 @@ module Spree
         name = item.variant.product.name
         name << " - #{item.variant.options_text}" unless item.variant.options_text.empty?
         price = (item.price * 100).to_i # convert for gateway
-        { :name        => name[0..120],
-          :description => (item.variant.product.description[0..120] if item.variant.product.description),
+        { :name        => name[0..120].gsub(/<\/?[^>]*>/, ""),
+          :description => (item.variant.product.description[0..120].gsub(/<\/?[^>]*>/, "") if item.variant.product.description),
           :number      => item.variant.sku,
           :quantity    => item.quantity,
           :amount      => price,
